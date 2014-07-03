@@ -8,6 +8,7 @@ use Mojolicious::Lite;
 app->config(
   hypnotoad => {
     listen => ['http://IPADDRESS:PORT'],
+    pid_file => 'gallery.pid'
   }
 );
 
