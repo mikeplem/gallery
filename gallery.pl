@@ -1,41 +1,63 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 
+# render the hand created html file in the public directory
 get '/' => sub {
   my $self = shift;
-  my @gallery_dirs;
-  
-  if ( $#gallery_dirs <= 0 ) {  
-    opendir(my $dh, "public/") || die "can't opendir public/: $!";
-    @gallery_dirs = sort { $a cmp $b } grep { ! /^\./ && -d "public/$_" } readdir($dh);
-    closedir $dh;
-  }
-  
-  $self->stash ( gal_dirs => \@gallery_dirs );
-  
-  $self->render('index');
+  $self->render_static('index.html');
 };
 
-get '/:dir/:start' => sub {
+# if you want to have the script auto generate the directories in public
+# then uncomment this get block and comment out the get block above
+# get '/' => sub {
+  # my $self = shift;
+  # my @gallery_dirs;
+  
+  # if ( $#gallery_dirs <= 0 ) {  
+    # opendir(my $dh, "public/") || die "can't opendir public/: $!";
+    # @gallery_dirs = sort { $a cmp $b } grep { ! /^\./ && -d "public/$_" } readdir($dh);
+    # closedir $dh;
+  # }
+  
+  # $self->stash ( gal_dirs => \@gallery_dirs );
+  
+  # $self->render('index');
+# };
+
+# this block does the work of building the viewing of the gallery
+# start is the first part of an array slice to view chunks of images
+# at a time rather than all on one page
+get '/:dir/:start' => { start => 0 } => sub {
   my $self        = shift;
   my $directory   = $self->param('dir');
   my $slice_start = $self->param('start');
+
+  # how many images should be shown on a page
+  # we want 15 at a time  
   my $slice_end   = $slice_start + 14;
   my $prev_slice;
   my $next_slice;
   my $title;
   my @pics;
   
+  # only build the thumbnail image array once
   if ( $#pics <= 0 ) {
     @pics = map { s/public//r } grep { /\.jpg|\.png|\.gif/ } glob "public/$directory/thumbs/*";
+    
+    # if there are no thumbnails then build the images from the directory you chose
     if ( $#pics <= 0 ) {
       @pics = map { s/public//r } grep { /\.jpg|\.png|\.gif/ } glob "public/$directory/*";
     }
+    
+    # get the title of the gallery from the .title file
     open my $ifh, "<", "public/$directory/.title";
     $title = <$ifh>;
     close $ifh;
   }
   
+  # in order to show the next and previous page links correctly
+  # we need to know the previous slice from the current number
+  # we are on
   $prev_slice = $slice_start - 15;
   
   if ( $prev_slice < 0 ) {
@@ -50,6 +72,7 @@ get '/:dir/:start' => sub {
     $next_slice  = $slice_end + 1;    
   }
   
+  # grab only what we need from the entire list of images
   my @send_pics = @pics[$slice_start .. $slice_end];
 
   $self->stash( gallery => \@send_pics );
@@ -204,7 +227,7 @@ http://jquery.kvijayanand.in/galleriffic/
 
 =head1 DESCRIPTION
 
-Web based photo gallery using Mojolicious.  It follows a similar format to Trent Foley's gallerific
+Web based photo gallery using Mojolicious.  You will see at most 15 images at a time on a page and can page through the next and previous groups of 15.  When you click on a thumbnail image it will show in a larger viewing area just to the right of the thumbnails.
 
 =head1 README
 
@@ -215,6 +238,8 @@ In order to successfully use this script you need to follow a standard directory
 Along side gallery.pl you want a directory called public/.  Inside public/ will be your directories of different pictures.  Inside those directories will be a thumbs/ and originals/ directory.
 
 public/
+
+    index.html - hand written html file pointing to your directories
 
     Directory1/
       .title - file is the title of the gallery
@@ -244,10 +269,6 @@ C<<< # hypnotoad -f gallery.pl >>>
 =item Mojolicious::Lite
 
 =back
-
-=head1 TODO
-
-Allow the start of the gallery to point to an existing index.html file
 
 =head1 SCRIPT CATEGORIES
 
