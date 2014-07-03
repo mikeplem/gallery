@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+use warnings;
 use Mojolicious::Lite;
 
 # render the hand created html file in the public directory
