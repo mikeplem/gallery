@@ -3,6 +3,14 @@ use strict;
 use warnings;
 use Mojolicious::Lite;
 
+# IP address to configure and port to listen on
+# hypnotoad IP address and port to listen
+app->config(
+  hypnotoad => {
+    listen => ['http://IPADDRESS:PORT'],
+  }
+);
+
 # render the hand created html file in the public directory
 get '/' => sub {
   my $self = shift;
@@ -261,6 +269,15 @@ public/
         image2 - the original image
         image3 - the original image
 
+=head2 Network Access
+
+You need to replace IPADDRESS:PORT with the address and port you want the server to listen
+
+app->config(
+    hypnotoad => {
+        listen => ['http://IPADDRESS:PORT'],
+    }
+);
 
 =head1 RUNNING
 
