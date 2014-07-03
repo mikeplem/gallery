@@ -53,7 +53,9 @@ get '/:dir/:start' => { start => 0 } => sub {
     
     # get the title of the gallery from the .title file
     open my $ifh, "<", "public/$directory/.title";
-    $title = join("", <$ifh>);
+    while ( <$ifh> ) {
+      $title .= $_;
+    }
     close $ifh;
   }
   
