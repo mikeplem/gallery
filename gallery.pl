@@ -20,7 +20,7 @@ get '/' => sub {
 
 # if you want to have the script auto generate the directories in public
 # then uncomment this get block and comment out the get block above
-# get '/' => sub {
+ # get '/' => sub {
   # my $self = shift;
   # my @gallery_dirs;
   
@@ -134,28 +134,30 @@ View the following galleries
 
   <style type="text/css">
     .thumbs {
-      padding-left: 5px;
-      padding-bottom: 10px;
-      padding-right: 5px;
-      margin-bottom: 10px;
-      font-variant: small-caps;
+      margin-left: 10px;
+      margin-right: 5px;
       float:left;
     }
+    
     .viewer {
       padding-left: 20px;
       padding-bottom: 10px;
-      padding-right: 5px;
-      margin-bottom: 10px;
-      font-variant: small-caps;
       float:left;
     }
+    
     .clear {
       clear: both;
     }
-    .left {
+    
+    .prev {
       float: left;
-      padding-left: 10px;
     }
+    
+    .next {
+      float: left;
+      padding-left: 20px;
+    }
+
     .right {
       float: right;
     }
@@ -180,12 +182,17 @@ View the following galleries
       % my $show_pic;
       % my $med_pic;
       % my $download_pic;
+      % my $viewer_pic;
       
       % foreach my $img ( @$gallery ) {
         
         % $show_pic = $img;
         % $show_pic =~ s/\/thumbs//g;
         % $show_pic =~ s/thumb_//;
+
+        % if ( $counter == 0 ) {
+        %  $viewer_pic = $show_pic;
+        % }
         
         % $med_pic = $show_pic;
         % $med_pic =~ s/$dir//g;
@@ -200,28 +207,31 @@ View the following galleries
         % if ( ( $counter % 3 ) == 0 ) {
           <div class="clear"></div>
         % }
+       
       % }
-     </div>
+    </div>
      
     <div class="viewer">
-      <img src='<%= $show_pic %>' id='view_pic' />
+      <img src='<%= $viewer_pic %>' id='view_pic' />
       <p />
 
       % if ( $next > 15 ) {
-      <a class="left" href='/<%= $dir %>/<%= $prev %>'>Prev Page</a>
+      <a class="prev" href='/<%= $dir %>/<%= $prev %>'>Prev</a>
       % }
       
       % if ( $next < $end ) {
-      <a class="left" href='/<%= $dir %>/<%= $next %>'>Next Page</a>
+      <a class="next" href='/<%= $dir %>/<%= $next %>'>Next</a>
       % }
       <a class="right" href='<%= $download_pic %>' id="download">Download original</a>
 
     </div>
     
-    <p />
     <div class="clear"></div>
+  
+    <p />
+    
     <div class="thumbs">
-    <a href='/'>Main Page</a>
+      <a href='/'>Front page</a>
     </div>
     
   </body>
