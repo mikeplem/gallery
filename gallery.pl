@@ -53,11 +53,11 @@ get '/:dir/:start' => { start => 0 } => sub {
   
   # only build the thumbnail image array once
   if ( $#pics <= 0 ) {
-    @pics = map { s/public//r } grep { /\.jpg|\.png|\.gif/ } glob "public/$directory/thumbs/*";
+    @pics = map { s/public//r } grep { /\.[Jj][Pp][Gg]$|\.[Pp][Nn][Gg]$|\.[Gg][Ii][Ff]$/ } glob "public/$directory/thumbs/*";
     
     # if there are no thumbnails then build the images from the directory you chose
     if ( $#pics <= 0 ) {
-      @pics = map { s/public//r } grep { /\.jpg|\.png|\.gif/ } glob "public/$directory/*";
+      @pics = map { s/public//r } grep { /\.[Jj][Pp][Gg]$|\.[Pp][Nn][Gg]$|\.[Gg][Ii][Ff]$/ } glob "public/$directory/*";
     }
     
     # get the title of the gallery from the .title file
