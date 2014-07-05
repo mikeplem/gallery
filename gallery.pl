@@ -256,31 +256,45 @@ Web based photo gallery using Mojolicious.  You will see at most 15 images at a 
 
 In order to successfully use this script you need to follow a standard directory structure in order to allow the script to work properly.  Read the CONFIGURATION section below.
 
+=head1 FORMATS
+
+=over 3
+
+=item jpg
+
+=item jpeg
+
+=item gif
+
+=item png
+
+=back
+
 =head1 CONFIGURATION
 
-Along side gallery.pl you want a directory called public/.  Inside public/ will be your directories of different pictures.  Inside those directories will be a thumbs/ and originals/ directory.
+Along side gallery.pl you need a directory called public/.  Inside public/ will be your directories of pictures.  Inside those directories will be a thumbs/ and originals/ directory.  The public/ directory is the dependency of Mojolicious when serving static files.
 
 public/
 
     index.html - hand written html file pointing to your directories
 
     Directory1/
-      .title - file is the title of the gallery
-      image1 - a medium size image
-      image2 - a medium size image
-      image3 - a medium size image
+      .title - contents of file is the title of the gallery
+      image1.jpg - a medium size image
+      image2.jpg - a medium size image
+      image3.jpg - a medium size image
       
       thumbs/
-        thumb_image1
-        thumb_image2
-        thumb_image3
+        thumb_image1.jpg
+        thumb_image2.jpg
+        thumb_image3.jpg
         
       originals/
-        image1 - the original image
-        image2 - the original image
-        image3 - the original image
+        image1.jpg - the original image
+        image2.jpg - the original image
+        image3.jpg - the original image
 
-=head2 Network Access
+=head2 NETWORK ACCESS
 
 You need to replace IPADDRESS:PORT with the address and port you want the server to listen
 
