@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use Mojolicious::Lite;
+use Mojo::Log;
 
 # IP address to configure and port to listen on
 # hypnotoad IP address and port to listen
@@ -12,9 +13,29 @@ app->config(
   }
 );
 
+# location for the log to be stored
+my $log_dir = "logs";
+
+# if the log directory does not exist then create it
+if ( ! -d $log_dir ) {
+  print "Creating $log_dir directory\n";
+  mkdir $log_dir, 0755 or die "Cannot create $log_dir: $!\n";
+}
+
+# setup Mojo logging to use the log directory we just created
+# default the log level to info
+my $log = Mojo::Log->new (path => "$log_dir/gallery.log", level => 'info');
+
 # render the hand created html file in the public directory
 get '/' => sub {
   my $self = shift;
+  
+  my $remote_addr = $self->tx->remote_address;
+  my $ua          = $self->req->headers->user_agent;
+  my $path        = $self->req->url->to_abs->path;
+  my $method      = $self->req->method;
+  $log->info("$remote_addr $method $path $ua");
+
   $self->render_static('index.html');
 };
 
@@ -31,6 +52,12 @@ get '/' => sub {
   # }
   
   # $self->stash ( gal_dirs => \@gallery_dirs );
+  
+  # my $remote_addr = $self->tx->remote_address;
+  # my $ua          = $self->req->headers->user_agent;
+  # my $path        = $self->req->url->to_abs->path;
+  # my $method      = $self->req->method;
+  # $log->info("$remote_addr $method $path $ua");
   
   # $self->render('index');
 # };
@@ -50,6 +77,12 @@ get '/:dir/:start' => { start => 0 } => sub {
   my $next_slice;
   my $title;
   my @pics;
+
+  my $remote_addr = $self->tx->remote_address;
+  my $ua          = $self->req->headers->user_agent;
+  my $path        = $self->req->url->to_abs->path;
+  my $method      = $self->req->method;  
+  $log->info("$remote_addr $method $path $ua");
   
   # only build the thumbnail image array once
   if ( $#pics <= 0 ) {
@@ -61,11 +94,12 @@ get '/:dir/:start' => { start => 0 } => sub {
     }
     
     # get the title of the gallery from the .title file
-    open my $ifh, "<", "public/$directory/.title";
+    open my $ifh, "<", "public/$directory/.title" or warn "could not open (public/$directory/.title): $!\n";
     while ( <$ifh> ) {
       $title .= $_;
     }
     close $ifh;
+    
   }
   
   # in order to show the next and previous page links correctly
