@@ -229,8 +229,8 @@ View the following galleries
         % }
         
         % $med_pic = $show_pic;
-        % $med_pic =~ s/$dir//g;
-        % $med_pic =~ s/\///g;
+        <!-- % $med_pic =~ s/$dir//g; -->
+        <!-- % $med_pic =~ s/\///g; -->
         
         % $download_pic = $show_pic;
         % $download_pic =~ s/($dir)/$1\/originals/;
