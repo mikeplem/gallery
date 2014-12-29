@@ -338,15 +338,9 @@ public/
         image2.jpg - the original image
         image3.jpg - the original image
 
-=head2 NETWORK ACCESS
+=head2 CONFIGURATION
 
-You need to replace IPADDRESS:PORT with the address and port you want the server to listen
-
-app->config(
-    hypnotoad => {
-        listen => ['http://IPADDRESS:PORT'],
-    }
-);
+  Please fill in the appropriate fields in the gallery.conf file.
 
 =head1 RUNNING
 
