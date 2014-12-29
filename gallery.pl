@@ -68,7 +68,7 @@ get '/' => sub {
   # my $method      = $self->req->method;
   # $log->info("$remote_addr $method $path $ua");
   
-    $self->reply->static('index.html');
+  # $self->reply->static('index.html');
 
 # };
 
