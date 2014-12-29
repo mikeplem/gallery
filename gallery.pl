@@ -55,7 +55,7 @@ get '/' => sub {
   # my @gallery_dirs;
   
   # if ( $#gallery_dirs <= 0 ) {  
-    # opendir(my $dh, "public/") || die "can't opendir public/: $!";
+    # opendir(my $dh, "public/") or $log->info("can't opendir public: $!");
     # @gallery_dirs = sort { $a cmp $b } grep { ! /^\./ && -d "public/$_" } readdir($dh);
     # closedir $dh;
   # }
@@ -96,15 +96,19 @@ get '/:dir/:start' => { start => 0 } => sub {
   
   # only build the thumbnail image array once
   if ( $#pics <= 0 ) {
-    @pics = map { s/public//r } grep { /\.[Jj][Pp][Ee][Gg]$|\.[Jj][Pp][Gg]$|\.[Pp][Nn][Gg]$|\.[Gg][Ii][Ff]$/ } glob "public/$directory/thumbs/*";
+    @pics = map { s/public//r }
+            grep { /\.[Jj][Pp][Ee][Gg]$|\.[Jj][Pp][Gg]$|\.[Pp][Nn][Gg]$|\.[Gg][Ii][Ff]$/ }
+            glob "public/$directory/thumbs/*";
     
     # if there are no thumbnails then build the images from the directory you chose
     if ( $#pics <= 0 ) {
-      @pics = map { s/public//r } grep { /\.[Jj][Pp][Ee][Gg]$|\.[Jj][Pp][Gg]$|\.[Pp][Nn][Gg]$|\.[Gg][Ii][Ff]$/ } glob "public/$directory/*";
+      @pics = map { s/public//r }
+              grep { /\.[Jj][Pp][Ee][Gg]$|\.[Jj][Pp][Gg]$|\.[Pp][Nn][Gg]$|\.[Gg][Ii][Ff]$/ }
+              glob "public/$directory/*";
     }
     
     # get the title of the gallery from the .title file
-    open my $ifh, "<", "public/$directory/.title" or warn "could not open (public/$directory/.title): $!\n";
+    open my $ifh, "<", "public/$directory/.title" or $log->info("could not open (public/$directory/.title): $!");
     while ( <$ifh> ) {
       $title .= $_;
     }
