@@ -4,17 +4,26 @@ use warnings;
 use Mojolicious::Lite;
 use Mojo::Log;
 
-# IP address to configure and port to listen on
-# hypnotoad IP address and port to listen
-app->config(
-  hypnotoad => {
-    listen => ['http://IPADDRESS:PORT'],
-    pid_file => 'gallery.pid'
-  }
+our $VERSION = "1.0";
+
+# load a config file that contains the apps
+# configuration parameters
+my $config = plugin 'Config';
+
+# hypnotoad server configuration
+app->config (
+    hypnotoad => {
+        listen             => [$config->{ip_address_port}],
+        pid_file           => $config->{pid_file},
+        heartbeat_timeout  => $config->{heartbeat_timeout},
+        heartbeat_interval => $config->{heartbeat_interval},
+        inactivity_timeout => $config->{inactivity_timeout},
+        workers            => $config->{workers},
+    }
 );
 
 # location for the log to be stored
-my $log_dir = "logs";
+my $log_dir = $config->{log_dir};
 
 # if the log directory does not exist then create it
 if ( ! -d $log_dir ) {
@@ -24,7 +33,7 @@ if ( ! -d $log_dir ) {
 
 # setup Mojo logging to use the log directory we just created
 # default the log level to info
-my $log = Mojo::Log->new (path => "$log_dir/gallery.log", level => 'info');
+my $log = Mojo::Log->new (path => "$log_dir/$config->{log_file}", level => $config->{log_level});
 
 # render the hand created html file in the public directory
 get '/' => sub {
@@ -36,7 +45,7 @@ get '/' => sub {
   my $method      = $self->req->method;
   $log->info("$remote_addr $method $path $ua");
 
-  $self->render_static('index.html');
+  $self->reply->static('index.html');
 };
 
 # if you want to have the script auto generate the directories in public
@@ -59,7 +68,8 @@ get '/' => sub {
   # my $method      = $self->req->method;
   # $log->info("$remote_addr $method $path $ua");
   
-  # $self->render('index');
+    $self->reply->static('index.html');
+
 # };
 
 # this block does the work of building the viewing of the gallery
