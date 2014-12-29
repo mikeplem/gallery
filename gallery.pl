@@ -4,7 +4,7 @@ use warnings;
 use Mojolicious::Lite;
 use Mojo::Log;
 
-our $VERSION = "1.0";
+our $VERSION = "1.1";
 
 # load a config file that contains the apps
 # configuration parameters
