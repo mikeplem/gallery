@@ -4,7 +4,7 @@ use warnings;
 use Mojolicious::Lite;
 use Mojo::Log;
 
-our $VERSION = "1.1";
+our $VERSION = "1.2";
 
 # load a config file that contains the apps
 # configuration parameters
@@ -181,6 +181,11 @@ View the following galleries
   <title><%= title %></title>
 
   <style type="text/css">
+    body {
+      color: white;
+      background: #336699;
+    }
+    
     .thumbs {
       margin-left: 10px;
       margin-right: 5px;
@@ -208,6 +213,26 @@ View the following galleries
 
     .right {
       float: right;
+    }
+    
+    A:link {
+      color: white;
+      background-color: #336699;
+    }
+
+    A:active {
+       color: white;
+       background-color: #336699;
+    }
+
+    A:hover {
+       color: yellow;
+       background-color: #336699;
+    }
+
+    A:visited {
+       color: lime;
+       background-color: #336699;
     }
   </style>
 
